@@ -34,6 +34,7 @@ export function LoginComponents() {
                 localStorage.setItem('token', token);
         
                 localStorage.setItem('user', JSON.stringify(user));
+                localStorage.setItem('username', user.userName);
         
                 if (role === "Admin") {
                     navigate("/admin");

@@ -5,10 +5,12 @@ import { number } from "yup"
 import Swal from "sweetalert2";
 import * as yup from "yup"
 import '../security/login.css'
+import { useState } from "react";
 
 export function AddDoctorComponent() {
 
     const token = localStorage.getItem("token"); 
+    const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
     const formik = useFormik({
         initialValues: {
@@ -37,6 +39,7 @@ export function AddDoctorComponent() {
         }),
 
         onSubmit: (values) => {
+            setLoading(true)
             axios({
                 method: "post",
                 url: "http://localhost:8080/create",
@@ -52,6 +55,7 @@ export function AddDoctorComponent() {
                     'success'
                 )
                 navigate("/admin")
+                setLoading(false)
 
             }).catch((error) => {
                 console.error("There was an error submitting the form:", error);
@@ -65,6 +69,8 @@ export function AddDoctorComponent() {
                     console.error("Error setting up request:", error.message);
                     alert("Error: " + error.message);
                 }
+
+                setLoading(false)
             });
         }
     })
@@ -209,6 +215,15 @@ export function AddDoctorComponent() {
                                     <div className="text-danger">{formik.errors.doctorRating}</div>
                                 ) : null}
                             </div>
+                            {
+                                 loading &&(
+                                    <div className="position-absolute top-50 start-50 translate-middle">
+                                    <div className="spinner-border text-danger fw-bold" role="status" style={{width: '3rem', height: '3rem'}}>
+                                        <span className="sr-only"></span>
+                                    </div>
+                                </div>
+                                )
+                            }
                             <button type="submit" className="btn btn-outline-primary mt-3 w-100">Register</button>
                         </form>
                         <p className="mt-2">

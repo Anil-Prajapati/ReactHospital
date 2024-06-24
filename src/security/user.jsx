@@ -7,6 +7,7 @@ export function UserComponent() {
 
     const [appoiment, setAppoiment] = useState([]);
     const [doctor, setDoctor] = useState([]);
+    const [login, setLogin] = useState("")
     const navigate = useNavigate();
     const token = localStorage.getItem("token");
     const [pageNumber, setPageNumber] = useState(0);
@@ -32,6 +33,32 @@ export function UserComponent() {
             });
         }
     }, []);
+
+    useEffect(() => {
+
+        const username = localStorage.getItem('username');
+        console.log("This is the localStorage Name : " + username);
+        if (!username) {
+            navigate("/login")
+            return;
+        }
+
+        axios({
+            method: "get",
+            url: `http://localhost:8080/api/names/${username}`,
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }).then((response) => {
+            console.log("this is the login details...")
+            setLogin(response.data)
+            console.log(response.data)
+        }).catch((error) => {
+            console.error("Error fetching data:", error);
+            navigate("/login")
+        })
+    }, [])
+
     useEffect(() => {
         const filtered = appoiment.filter(appointment =>
             (appointment.patientName && appointment.patientName.toLowerCase().includes(searchText.toLowerCase())) ||
@@ -41,7 +68,10 @@ export function UserComponent() {
         // Rest of your code
     }, [searchText, appoiment]);
 
-
+    const logoutMethod= (()=>{
+        localStorage.removeItem('token');
+        navigate('/login')
+    })
 
     const formatDate = (dateString) => {
         const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
@@ -55,8 +85,6 @@ export function UserComponent() {
 
     const offset = pageNumber * itemsPerPage;
     const currentPageData = filteredAppointments.slice(offset, offset + itemsPerPage);
-
-
 
     return (
         <div className="container-fluid">
@@ -81,6 +109,13 @@ export function UserComponent() {
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link active" aria-current="page" href="#">profile</a>
+                            </li>
+                        </ul>
+
+                        <ul className="navbar-nav">
+                            <li className="nav-item d-flex">
+                                <button onClick={logoutMethod} className="btn btn-outline-danger m-1">Logout</button>
+                                <td className="mt-2 me-2 fw-bold fs-5"><i class="bi bi-person-circle ">{login.userName}</i></td>
                             </li>
                         </ul>
                     </div>

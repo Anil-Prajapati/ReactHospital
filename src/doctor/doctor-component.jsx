@@ -1,12 +1,14 @@
 import axios from "axios";
 import { useFormik } from "formik";
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import Swal from "sweetalert2";
 
 export function DoctorMainPageComponent() {
     const [patient, setPatient] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const location = useLocation();
     const navigate = useNavigate();
     const token = localStorage.getItem("token");
     console.log("Token at component load:", token);
@@ -14,7 +16,7 @@ export function DoctorMainPageComponent() {
     useEffect(() => {
         if (!token) {
             console.log("No token found. Redirecting to login.");
-            navigate("/login"); // Redirect to login if no token is found
+            navigate("/login");
         }
     }, [token, navigate]);
 
@@ -36,6 +38,7 @@ export function DoctorMainPageComponent() {
         onSubmit: async (values) => {
             console.log("Form submitted with values:", values);
             if (token) {
+                setLoading(true)
                 console.log("Token is present. Making API call.");
                 try {
                     const response = await axios({
@@ -54,13 +57,14 @@ export function DoctorMainPageComponent() {
                         'success'
                     );
                     navigate("/user");
+                    setLoading(false)
                 } catch (error) {
                     if (error.response) {
                         console.log("Error response:", error.response);
                         if (error.response.status === 401) {
                             console.log("Unauthorized: Invalid or expired token. Please log in again.");
-                            localStorage.removeItem("token"); // Remove invalid token
-                            navigate("/login"); // Redirect to login page
+                            localStorage.removeItem("token");
+                            navigate("/login");
                         } else {
                             console.log("Error message:", error.response.data.message || "Something went wrong. Please try again.");
                         }
@@ -69,28 +73,47 @@ export function DoctorMainPageComponent() {
                     } else {
                         console.log("Error", error.message);
                     }
+                    setLoading(false)
                 }
             } else {
                 console.log("No token found at form submission. Redirecting to login.");
-                navigate("/login"); // Redirect to login if no token is found
+                navigate("/login");
             }
         }
     });
 
     return (
-        <div className="container-fluid">
+        <div className="container-fluid" id="appoimentPage">
             <div className="row d-flex justify-content-center align-items-center vh-100">
                 <div className="col-sm-6">
-                    <div className="card p-4 rounded-5">
+                    <div className="card p-4 rounded-5 shadow" id="appoimentCard">
                         <h3 className="text-center fw-bold">Patient</h3>
                         <hr />
                         <form onSubmit={formik.handleSubmit}>
+
+                        <div className="form-floating me-2 flex-grow-1">
+                                <input
+                                    type="text"
+                                    id="doctorName"
+                                    name="doctorNameName"
+                                    className="form-control"
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    placeholder="Enter The Doctor Name"
+                                    value={formik.values.patientName}
+                                />
+                                <label htmlFor="patientName">Doctor Name</label>
+                                {formik.touched.patientName && formik.errors.patientName ? (
+                                    <div className="text-danger">{formik.errors.patientName}</div>
+                                ) : null}
+                            </div>
+
                             <div className="form-floating me-2 flex-grow-1">
                                 <input
                                     type="text"
                                     id="patientName"
                                     name="patientName"
-                                    className="form-control"
+                                    className="form-control mt-3"
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
                                     placeholder="Enter The Patient Name"
@@ -169,12 +192,20 @@ export function DoctorMainPageComponent() {
                                     <div className="text-danger">{formik.errors.patientAddress}</div>
                                 ) : null}
                             </div>
-
                             <button type="submit" className="btn btn-info w-100 mt-3">Book Appointment</button>
+                            {
+                                loading &&(
+                                    <div className="position-absolute top-50 start-50 translate-middle">
+                                    <div className="spinner-border text-danger fw-bold" role="status" style={{width: '3rem', height: '3rem'}}>
+                                        <span className="sr-only"></span>
+                                    </div>
+                                </div>
+                                )
+                            }
                         </form>
 
                         <p className="mt-2">
-                            <Link to="/user" className="text-decoration-none">Back</Link>
+                            <Link to="/user" className="text-decoration-none fw-bold fs-5 text-dark">Back</Link>
                         </p>
                     </div>
                 </div>

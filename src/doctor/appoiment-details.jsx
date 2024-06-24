@@ -6,6 +6,7 @@ import '../security/login.css'
 
 export function PatientAppoimentComponent() {
     const [appoiment, setAppoiment] = useState([]);
+    const [login, setLogin] = useState("");
     const token = localStorage.getItem('token');
     const [selectedStatus, setSelectedStatus] = useState({});
     const [pageNumber, setPageNumber] = useState(0);
@@ -33,6 +34,32 @@ export function PatientAppoimentComponent() {
             navigate("/login");
         }
     }, [token, navigate]);
+
+    useEffect(() => {
+
+        const username = localStorage.getItem('username');
+        console.log("This is the localStorage Name : " + username);
+        if (!username) {
+            navigate("/login")
+            return;
+        }
+
+        axios({
+            method: "get",
+            url: `http://localhost:8080/api/names/${username}`,
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }).then((response) => {
+            console.log("this is the login details...")
+            setLogin(response.data)
+            console.log(response.data)
+
+        }).catch((error) => {
+            console.error("Error fetching data:", error);
+            navigate("/login")
+        })
+    }, [])
 
     const handleAuthorizationError = (error) => {
         console.log(error.response);
@@ -135,7 +162,8 @@ export function PatientAppoimentComponent() {
                         onChange={(e) => setSearchText(e.target.value)}
                     />
                     <button className="btn btn-outline-dark me-3">Serach</button>
-                    <button className="btn btn-outline-danger" onClick={handleLogout}>Logout</button>
+                    <button className="btn btn-outline-danger me-2" onClick={handleLogout}>Logout</button>
+                    <td className="fw-bold fs-5"><i class="bi bi-person-circle d-flex align-items-center">{login.userName}</i></td>
                 </div>
             </div>
             <table className="table table-striped table-hover" id="tableColor">
@@ -147,6 +175,7 @@ export function PatientAppoimentComponent() {
                         <th>PatientDate</th>
                         <th>PatientDOB</th>
                         <th>PatientAddress</th>
+                        <th>DoctorName</th>
                         <th>Amount</th>
                         <th>DescriptionDetails</th>
                         <th>PatientStatus</th>
@@ -162,6 +191,7 @@ export function PatientAppoimentComponent() {
                             <td>{formatDate(data.patientDate)}</td>
                             <td>{formatDate(data.patientDOB)}</td>
                             <td>{data.patientAddress}</td>
+                            <td>{data.doctorName}</td>
                             <td>{data.paidAmount}</td>
                             <td><Link to={`/descriptionUpdate/${data.id}/${data.descriptionDetails}`}><button className="btn btn-success">Description Upadte</button></Link></td>
                             <td className="text-success">{data.patientstatus}</td>

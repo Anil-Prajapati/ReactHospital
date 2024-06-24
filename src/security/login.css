@@ -121,6 +121,7 @@ html, body {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
+
 /* Doctor Register Page CSS coding */
 #addDoctor{
     background-color: rgba(38, 124, 36, 0.507);
@@ -201,3 +202,38 @@ html, body {
     top: 0;
     left: 0;
 }
+
+/* Appoiment Book Pages */
+#appoimentPage{
+    background-color: #516962;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+#appoimentCard{
+    background-color: #36131305;
+}
+
+#password{
+    background-color: #36131305;
+}
+#patientName{
+    background-color: #36131305;
+}
+
+#petientEmail{
+    background-color: #36131305;
+}
+#patientContact{
+    background-color: #36131305;
+}
+#patientDOB{
+    background-color: #36131305;
+}
+#patientAddress{
+    background-color: #36131305;
+}
+

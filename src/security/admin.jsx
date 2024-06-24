@@ -7,6 +7,8 @@ import '../security/login.css'
 export function AdminComponent() {
 
     const [doctor, setDoctor] = useState([]);
+    const [textSearch, setTextSearch] = useState('')
+    const [login, setLogin] = useState("")
     const navigate = useNavigate();
     const token = localStorage.getItem("token");
     const [total, setTotal] = useState([])
@@ -54,6 +56,43 @@ export function AdminComponent() {
         })
     }, [])
 
+    useEffect(() => {
+
+        const username = localStorage.getItem('username');
+        console.log("This is the localStorage Name : " + username);
+        if (!username) {
+            navigate("/login")
+            return;
+        }
+
+        axios({
+            method: "get",
+            url: `http://localhost:8080/api/names/${username}`,
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }).then((response) => {
+            console.log("this is the login details...")
+            setLogin(response.data)
+            console.log(response.data)
+        }).catch((error) => {
+            console.error("Error fetching data:", error);
+            navigate("/login")
+        })
+    }, [])
+
+    useEffect(() => {
+        const filterData = doctor.filter(filterDatas => {
+            return (
+                filterDatas.doctorName.toLowerCase().includes(textSearch.toLowerCase()) ||
+                filterDatas.doctorSpecialization.toLowerCase().includes(textSearch.toLowerCase()) ||
+                filterDatas.doctorEmail.toLowerCase().includes(textSearch.toLowerCase())
+            );
+        });
+        setFilteredAppointments(filterData); // Update filtered data state
+    }, [textSearch, doctor]);
+
+
     const formatDate = (dateString) => {
         const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
         return new Date(dateString).toLocaleDateString('en-CA', options);
@@ -75,7 +114,7 @@ export function AdminComponent() {
                     <a className="navbar-brand m-1" href="#">
                         <img src="logo.jpg" alt="Logo" style={{ width: '35px', height: 'auto' }} className="rounded-3" />
                     </a>
-                    <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <button className="navbar-toggler bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                         <span className="navbar-toggler-icon"></span>
                     </button>
                     <div className="collapse navbar-collapse" id="navbarSupportedContent">
@@ -90,16 +129,27 @@ export function AdminComponent() {
                                 <Link to="/admin/dashboard" className="text-decoration-none me-1"><button className="btn btn-outline-info">Dashboard</button></Link>
                             </li>
                         </ul>
+                        <form className="d-flex" role="search">
+                            <input
+                                className="form-control me-3 w-100"
+                                type="search"
+                                placeholder="Search Name & Email & Specilization"
+                                aria-label="Search"
+                                value={textSearch}
+                                onChange={(e) => setTextSearch(e.target.value)}
+                            />
+                        </form>
                         <ul className="navbar-nav">
-                            <li className="nav-item">
-                                <button onClick={logoutMethod} className="btn btn-outline-danger m-1">Logout</button>
+                            <li className="nav-item d-flex">
+                                <button onClick={logoutMethod} className="btn btn-outline-danger me-3">Logout</button>
+                                <td className="text-light mt-2 me-4 fw-bold fs-5"><i class="bi bi-person-circle">{login.userName}</i></td>
                             </li>
                         </ul>
                     </div>
                 </div>
             </nav>
             <div className="" id="tablsCSS">
-                <h3 className="text-info fw-bold"  id="adminCSS">INFORMATION</h3>
+                <h3 className="text-info fw-bold" id="adminCSS">INFORMATION</h3>
                 <table className="table table-striped table-hover">
                     <thead>
                         <tr>
@@ -142,18 +192,18 @@ export function AdminComponent() {
                     </tbody>
                 </table>
                 <div className="pagination-container">
-                <ReactPaginate
-                    previousLabel={<button className="btn btn-outline-dark m-2">Previous</button>}
-                    nextLabel={<button className="btn btn-outline-dark m-2">Next</button>}
-                    breakClassName={'break-me'}
-                    pageCount={pageCount}
-                    marginPagesDisplayed={2}
-                    pageRangeDisplayed={5}
-                    onPageChange={handlePageClick}
-                    containerClassName={'pagination'}
-                    activeClassName={'active'}
-                />
-            </div>
+                    <ReactPaginate
+                        previousLabel={<button className="btn btn-outline-dark m-2">Previous</button>}
+                        nextLabel={<button className="btn btn-outline-dark m-2">Next</button>}
+                        breakClassName={'break-me'}
+                        pageCount={pageCount}
+                        marginPagesDisplayed={2}
+                        pageRangeDisplayed={5}
+                        onPageChange={handlePageClick}
+                        containerClassName={'pagination'}
+                        activeClassName={'active'}
+                    />
+                </div>
 
                 <div className="row">
                     <div className="col-sm-3">
