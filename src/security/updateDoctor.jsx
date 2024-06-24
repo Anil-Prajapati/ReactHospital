@@ -50,8 +50,7 @@ export function UpdateDoctor() {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
-            })
-                .then((response) => {
+            }).then((response) => {
                     const { id, shiftTime, doctorFee } = response.data;
                     setUpdate({
                         id,

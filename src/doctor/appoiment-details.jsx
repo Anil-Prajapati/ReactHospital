@@ -2,10 +2,10 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ReactPaginate from 'react-paginate';
-import '../security/login.css'
+import '../security/login.css';
 
 export function PatientAppoimentComponent() {
-    const [appoiment, setAppoiment] = useState([]);
+    const [appointments, setAppointments] = useState([]);
     const [login, setLogin] = useState("");
     const token = localStorage.getItem('token');
     const [selectedStatus, setSelectedStatus] = useState({});
@@ -13,6 +13,9 @@ export function PatientAppoimentComponent() {
     const itemsPerPage = 13;
     const [filteredAppointments, setFilteredAppointments] = useState([]);
     const [searchText, setSearchText] = useState('');
+    const [date, setDate] = useState('');
+    const [doctorName, setDoctorName] = useState('');
+     const [doctorsList, setDoctorsList] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -25,8 +28,9 @@ export function PatientAppoimentComponent() {
                 }
             }).then((response) => {
                 console.log(response.data);
-                setAppoiment(response.data);
+                setAppointments(response.data);
                 setFilteredAppointments(response.data);
+                setDoctorsList(response.data);
             }).catch((error) => {
                 handleAuthorizationError(error);
             });
@@ -36,7 +40,6 @@ export function PatientAppoimentComponent() {
     }, [token, navigate]);
 
     useEffect(() => {
-
         const username = localStorage.getItem('username');
         console.log("This is the localStorage Name : " + username);
         if (!username) {
@@ -82,13 +85,37 @@ export function PatientAppoimentComponent() {
     };
 
     useEffect(() => {
-        const filtered = appoiment.filter(appointment =>
-            appointment.patientName.toLowerCase().includes(searchText.toLowerCase()) ||
-            appointment.patientDate.toLowerCase().includes(searchText.toLowerCase()) ||
-            appointment.patientAddress.toLowerCase().includes(searchText.toLowerCase())
-        );
-        setFilteredAppointments(filtered)
-    }, [searchText, appoiment]);
+        const filtered = appointments.filter(appointment => {
+            const appointmentDate = new Date(appointment.patientDate).toLocaleDateString('en-CA');
+            const searchTextMatch = appointment.patientName.toLowerCase().includes(searchText.toLowerCase()) ||
+                appointment.patientAddress.toLowerCase().includes(searchText.toLowerCase());
+            const dateMatch = !date || appointmentDate === date;
+            const doctorNameMatch = !doctorName || appointment.doctorName.toLowerCase().includes(doctorName.toLowerCase());
+            return searchTextMatch && dateMatch && doctorNameMatch;
+        });
+
+        setFilteredAppointments(filtered);
+    }, [searchText, date, doctorName, appointments]);
+
+    useEffect(() => {
+        if (appointments.length > 0) {
+            const uniqueDoctors = [...new Set(appointments
+                .filter(appointment => appointment.doctorName) // Filter out undefined or falsy values
+                .map(appointment => appointment.doctorName))];
+            
+            console.log("Unique Doctors:", uniqueDoctors);
+            
+            const formattedDoctorsList = uniqueDoctors.map((name, index) => ({ id: index + 1, doctorName: name }));
+            console.log("Formatted Doctors List:", formattedDoctorsList);
+
+            setDoctorsList(formattedDoctorsList);
+        }
+    }, [appointments]);
+
+
+    const handleDoctorChange = (e) => {
+        setDoctorName(e.target.value);
+    };
 
     const handleStatusChange = (id, patientstatus) => {
         setSelectedStatus((prevState) => ({
@@ -111,7 +138,7 @@ export function PatientAppoimentComponent() {
         })
             .then((response) => {
                 console.log("Status updated successfully:", response.data);
-                setAppoiment((prevState) =>
+                setAppointments((prevState) =>
                     prevState.map((app) =>
                         app.id === id ? { ...app, patientstatus } : app
                     )
@@ -139,35 +166,65 @@ export function PatientAppoimentComponent() {
     const offset = pageNumber * itemsPerPage;
     const currentPageData = filteredAppointments.slice(offset, offset + itemsPerPage);
 
-    const handleLogout = (()=>{
+    const handleLogout = () => {
         localStorage.removeItem("token");
-        navigate("/login")
-    })
+        navigate("/login");
+    }
 
     return (
         <div className="container-fluid" id="appoiment">
-            <div className="row">
-                <div className="col-sm-6">
-                    <div className="mt-3">
-                        <h4 className="fw-bold" id="appoimentHeading">Appoiment Details Here!</h4>
+            <div className="container-fluid mt-2">
+                <div className="row p-3 bg-dark s shadow">
+                    <div className="col-lg-3 col-md-6 col-sm-12">
+                        <div className="">
+                            <h4 className="fw-bold" id="appointmentHeading">Appointment Details Here!</h4>
+                        </div>
+                    </div>
+                    <div className="col-lg-4 col-md-6 col-sm-12 d-flex">
+                        <div className=" me-2">
+                            <input
+                                type="date"
+                                id="dateFilter"
+                                value={date}
+                                onChange={(e) => setDate(e.target.value)}
+                                className="form-control"
+                            />
+                        </div>
+                        <div className="">
+                        <select
+                                id="doctorNameFilter"
+                                value={doctorName}
+                                onChange={handleDoctorChange}
+                                className="form-control"
+                            >
+                                <option value="">Select Doctor</option>
+                                {doctorsList.map(doctor => (
+                                    <option key={doctor.id} value={doctor.doctorName}>{doctor.doctorName}</option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
+                    <div className="col-lg-5 col-md-12  d-flex">
+                        <input
+                            type="text"
+                            id="searchBox"
+                            className="form-control me-3"
+                            placeholder="Search by Patient Name"
+                            value={searchText}
+                            onChange={(e) => setSearchText(e.target.value)}
+                        />
+                        <button className="btn btn-outline-primary me-3">Search</button>
+                        <button className="btn btn-outline-danger me-2" onClick={handleLogout}>Logout</button>
+                        <div className="fw-bold fs-5 d-flex align-items-center text-light">
+                            <i className="bi bi-person-circle me-2 text-light"></i>
+                            {login.userName}
+                        </div>
                     </div>
                 </div>
-                <div className="col-sm-6 mt-3 d-flex align-items-center">
-                    <input
-                        type="text"
-                        id="serachBox"
-                        className="form-control me-3"
-                        placeholder="Search by Patient Name"
-                        value={searchText}
-                        onChange={(e) => setSearchText(e.target.value)}
-                    />
-                    <button className="btn btn-outline-dark me-3">Serach</button>
-                    <button className="btn btn-outline-danger me-2" onClick={handleLogout}>Logout</button>
-                    <td className="fw-bold fs-5"><i class="bi bi-person-circle d-flex align-items-center">{login.userName}</i></td>
-                </div>
             </div>
-            <table className="table table-striped table-hover" id="tableColor">
-                <thead class="table-dark">
+
+            <table className="table table-striped table-hover mt-3" id="tableColor">
+                <thead className="table-dark">
                     <tr>
                         <th>PatientName</th>
                         <th>PatientEmail</th>
@@ -193,7 +250,7 @@ export function PatientAppoimentComponent() {
                             <td>{data.patientAddress}</td>
                             <td>{data.doctorName}</td>
                             <td>{data.paidAmount}</td>
-                            <td><Link to={`/descriptionUpdate/${data.id}/${data.descriptionDetails}`}><button className="btn btn-success">Description Upadte</button></Link></td>
+                            <td><Link to={`/descriptionUpdate/${data.id}/${data.descriptionDetails}`}><button className="btn btn-success">Description Update</button></Link></td>
                             <td className="text-success">{data.patientstatus}</td>
                             <td>
                                 <select

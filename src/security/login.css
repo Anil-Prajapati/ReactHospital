@@ -172,12 +172,8 @@ html, body {
 
 /* Appoiment Details CSS */
 
-#serachBox{
-    width: 80%;
-}
-
- #appoimentHeading{
-    font-size: 40px;
+ #appointmentHeading{
+    font-size: 30px;
     background-image: url('../images/bck.jpg');
     background-size: contain;
     -webkit-background-clip: text;
