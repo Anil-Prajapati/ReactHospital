@@ -35,7 +35,6 @@ export function UserComponent() {
     }, []);
 
     useEffect(() => {
-
         const username = localStorage.getItem('username');
         console.log("This is the localStorage Name : " + username);
         if (!username) {
@@ -60,15 +59,17 @@ export function UserComponent() {
     }, [])
 
     useEffect(() => {
-        const filtered = appoiment.filter(appointment =>
-            (appointment.patientName && appointment.patientName.toLowerCase().includes(searchText.toLowerCase())) ||
-            (appointment.patientDate && appointment.patientDate.toLowerCase().includes(searchText.toLowerCase())) ||
-            (appointment.patientAddress && appointment.patientAddress.toLowerCase().includes(searchText.toLowerCase()))
-        );
-        // Rest of your code
-    }, [searchText, appoiment]);
+        const filterData = doctor.filter(filterDatas => {
+            return (
+                filterDatas.doctorName.toLowerCase().includes(searchText.toLowerCase()) ||
+                filterDatas.doctorSpecialization.toLowerCase().includes(searchText.toLowerCase()) ||
+                filterDatas.doctorEmail.toLowerCase().includes(searchText.toLowerCase())
+            );
+        });
+        setFilteredAppointments(filterData); // Update filtered data state
+    }, [searchText, doctor]);
 
-    const logoutMethod= (()=>{
+    const logoutMethod = (() => {
         localStorage.removeItem('token');
         navigate('/login')
     })
@@ -88,51 +89,30 @@ export function UserComponent() {
 
     return (
         <div className="container-fluid">
-            <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                <div class="container-fluid p-0">
-                    <a class="navbar-brand" href="#">
-                        <img src="logo.jpg" alt="Logo" style={{ width: '30px', height: 'auto' }} />
-                    </a>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <ul class="navbar-nav me-auto mb-2 mb-lg-0 ">
-                            <li class="nav-item">
-                                <Link to="/registerDoctor" className="text-decoration-none"><a class="nav-link active" aria-current="page" href="#">AddDoctor</a></Link>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" href="#">Delete</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" href="#">Update</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" href="#">profile</a>
-                            </li>
-                        </ul>
-
-                        <ul className="navbar-nav">
-                            <li className="nav-item d-flex">
-                                <button onClick={logoutMethod} className="btn btn-outline-danger m-1">Logout</button>
-                                <td className="mt-2 me-2 fw-bold fs-5"><i class="bi bi-person-circle ">{login.userName}</i></td>
-                            </li>
-                        </ul>
+            <div className="row align-items-center mb-3 mt-2 bg-dark p-2">
+                <div className="col-sm-8">
+                    <div className="d-flex justify-content-between align-items-center">
+                        <h3 className="text-info fw-bold mb-0" id="Infomation">Information</h3>
+                        <div className="ms-3" style={{ width: '50%' }}>
+                            <input
+                                type="text"
+                                id="boxShadow"
+                                className="form-control"
+                                placeholder="Search by Doctor Name & Specilization & Email"
+                                value={searchText}
+                                onChange={(e) => setSearchText(e.target.value)}
+                            />
+                        </div>
                     </div>
                 </div>
-            </nav>
-
-            <div className="mt-3 float-end">
-                <input
-                    type="text"
-                    className="form-control mb-3"
-                    placeholder="Search by Patient Name"
-                    value={searchText}
-                    onChange={(e) => setSearchText(e.target.value)}
-                />
+                <div className="col-sm-4 d-flex justify-content-end align-items-center">
+                    <span className="me-3 fw-bold fs-5 d-flex align-items-center text-light">
+                        <i className="bi bi-person-circle me-2"></i>{login.userName}
+                    </span>
+                    <button onClick={logoutMethod} className="btn btn-outline-danger">Logout</button>
+                </div>
             </div>
             <div className="mt-4">
-                <h3 className="text-info fw-bold">Information</h3>
                 <table className="table table-striped table-hover">
                     <thead>
                         <tr>

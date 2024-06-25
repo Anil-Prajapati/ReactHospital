@@ -233,3 +233,15 @@ html, body {
     background-color: #36131305;
 }
 
+/* User */
+#Infomation{
+    font-size: 30px;
+    background-image: url('../images/bck.jpg');
+    background-size: contain;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;  
+}
+
+#boxShadow{
+    box-shadow: inset 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
+}

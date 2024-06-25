@@ -22,6 +22,7 @@ export function DoctorMainPageComponent() {
 
     const formik = useFormik({
         initialValues: {
+            doctorName:"",
             patientName: "",
             petientEmail: "",
             patientContact: "",
@@ -29,6 +30,7 @@ export function DoctorMainPageComponent() {
             patientAddress: ""
         },
         validationSchema: yup.object({
+            doctorName: yup.string().required("doctor Name is required."),
             patientName: yup.string().required("Patient Name is required."),
             petientEmail: yup.string().email("Invalid email address").required("Patient Email is required."),
             patientContact: yup.string().required("Patient Contact is required."),
@@ -95,12 +97,12 @@ export function DoctorMainPageComponent() {
                                 <input
                                     type="text"
                                     id="doctorName"
-                                    name="doctorNameName"
+                                    name="doctorName"
                                     className="form-control"
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
                                     placeholder="Enter The Doctor Name"
-                                    value={formik.values.patientName}
+                                    value={formik.values.doctorName}
                                 />
                                 <label htmlFor="patientName">Doctor Name</label>
                                 {formik.touched.patientName && formik.errors.patientName ? (
