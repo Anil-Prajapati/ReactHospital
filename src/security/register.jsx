@@ -33,7 +33,7 @@ export function RegisterComponenets() {
             setLoading(true)
             axios({
                 method: "post",
-                url: "http://localhost:8080/api/create/tci/extio/create",
+                url: "https://hospital-jgla.onrender.com/api/create/tci/extio/create",
                 data: values
             }).then((response) => {
                 console.log(response.data)

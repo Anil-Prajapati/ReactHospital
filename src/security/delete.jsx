@@ -24,7 +24,7 @@ export function DeleteComponent() {
                 if (result.isConfirmed) {
                     axios({
                         method: "delete",
-                        url: `http://localhost:8080/delete/${idDelete}`,
+                        url: `https://hospital-jgla.onrender.com/delete/${idDelete}`,
                         headers: {
                             Authorization: `Bearer ${token}`
                         }

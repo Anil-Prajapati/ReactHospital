@@ -1,13 +1,15 @@
 import { Link, useNavigate } from "react-router-dom";
 import '../security/login.css';
+import { useState } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import axios from "axios";
 import Swal from "sweetalert2";
 
 export function LoginComponents() {
-
+    const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
     const navigate = useNavigate();
+
     const formik = useFormik({
         initialValues: {
             userName: "",
@@ -20,7 +22,7 @@ export function LoginComponents() {
         onSubmit: (values) => {
             axios({
                 method: "post",
-                url: "http://localhost:8080/authentication",
+                url: "https://hospital-jgla.onrender.com/authentication",
                 data: {
                     userName: values.userName,
                     password: values.password
@@ -32,16 +34,14 @@ export function LoginComponents() {
                 const role = roles.length > 0 ? roles[0].roleName : null;
     
                 localStorage.setItem('token', token);
-        
                 localStorage.setItem('user', JSON.stringify(user));
                 localStorage.setItem('username', user.userName);
         
                 if (role === "Admin") {
                     navigate("/admin");
-                }else if(role === "Doctor"){
+                } else if (role === "Doctor") {
                     navigate("/patient/appoiment");
-
-                }else if (role === "User") {
+                } else if (role === "User") {
                     navigate("/user");
                 } else {
                     navigate("/register");
@@ -66,8 +66,11 @@ export function LoginComponents() {
                 }
             });
         }
-        
-    })
+    });
+    
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
 
     return (
         <div className="container-fluid" id="loginCSS">
@@ -77,36 +80,48 @@ export function LoginComponents() {
                         <h3 className="text-center fw-bold" id="headingImg">Login Here!</h3>
                         <form onSubmit={formik.handleSubmit}>
                             <label htmlFor="userName" className="mt-1">UserName <span className="text-danger fw-bold">*</span></label>
-                            <input type="text"
+                            <input
+                                type="text"
                                 id="userName"
                                 className="form-control mt-1"
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                                 name="userName"
                                 placeholder="Enter Name"
-                                value={formik.values.userName} 
-                                  />
+                                value={formik.values.userName}
+                            />
                             {formik.touched.userName && formik.errors.userName ? (
                                 <div className="text-danger fw-bold">{formik.errors.userName}</div>
                             ) : null}
 
                             <label htmlFor="password" className="mt-1">Password <span className="text-danger fw-bold">*</span></label>
-                            <input
-                                type="password"
-                                id="password"
-                                name="password"
-                                className="form-control"
-                                placeholder="Enter Password"
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                value={formik.values.password} />
+                            <div className="input-group">
+                                <input
+                                    type={showPassword ? "text" : "password"} // Toggling between text and password
+                                    id="password"
+                                    name="password"
+                                    className="form-control"
+                                    placeholder="Enter Password"
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    value={formik.values.password}
+                                />
+                                <span className="input-group-text" onClick={togglePasswordVisibility} style={{ cursor: "pointer" }}>
+                                    {showPassword ? (
+                                        <i className="bi bi-eye-slash"></i> // Icon for hiding password
+                                    ) : (
+                                        <i className="bi bi-eye"></i> // Icon for showing password
+                                    )}
+                                </span>
+                            </div>
                             {formik.touched.password && formik.errors.password ? (
                                 <div className="text-danger fw-bold">{formik.errors.password}</div>
                             ) : null}
-
+                           
                             <button type="submit" className="btn btn-outline-success w-100 mt-3">Login Here</button>
-                            <p className="mt-2">
+                            <p className="mt-2 d-flex justify-content-between">
                                 <Link to="/" className="text-decoration-none">Back_to_home</Link>
+                                <Link className="text-decoration-none">Forget Password</Link>
                             </p>
                         </form>
                     </div>

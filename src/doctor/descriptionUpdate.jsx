@@ -20,7 +20,7 @@ export function DescriptionUpdateComponent() {
     const fetchDescriptionDetails = () => {
         axios({
             method: "get",
-            url: `http://localhost:8080/patient/${id}`,
+            url: `https://hospital-jgla.onrender.com/patient/${id}`,
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -56,7 +56,7 @@ export function DescriptionUpdateComponent() {
     const updateDescription = () => {
         axios({
             method: "put",
-            url: `http://localhost:8080/patient/description/${id}/${descriptionDetails}`,
+            url: `https://hospital-jgla.onrender.com/patient/description/${id}/${descriptionDetails}`,
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -65,7 +65,7 @@ export function DescriptionUpdateComponent() {
                 console.log("Description updated successfully:", response.data);
                 Swal.fire(
                     'Welcome !',
-                    'Thank you for Logging in Successfully...',
+                    'Thank you for Description Updated Successfully...',
                     'success'
                 );
                 navigate("/patient/appoiment"); 

@@ -19,7 +19,7 @@ export function UserComponent() {
         if (token) {
             axios({
                 method: "get",
-                url: "http://localhost:8080/patient/admin/all",
+                url: "https://hospital-jgla.onrender.com/patient/admin/all",
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -44,7 +44,7 @@ export function UserComponent() {
 
         axios({
             method: "get",
-            url: `http://localhost:8080/api/names/${username}`,
+            url: `https://hospital-jgla.onrender.com/api/names/${username}`,
             headers: {
                 Authorization: `Bearer ${token}`
             }

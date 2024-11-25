@@ -27,7 +27,7 @@ export function DoctorMainPageComponent() {
             petientEmail: "",
             patientContact: "",
             patientDOB: "",
-            patientAddress: ""
+            patientAddress: "",
         },
         validationSchema: yup.object({
             doctorName: yup.string().required("doctor Name is required."),
@@ -35,7 +35,7 @@ export function DoctorMainPageComponent() {
             petientEmail: yup.string().email("Invalid email address").required("Patient Email is required."),
             patientContact: yup.string().required("Patient Contact is required."),
             patientDOB: yup.date().required("Patient Date of Birth is required."),
-            patientAddress: yup.string().required("Patient Address is required.")
+            patientAddress: yup.string().required("Patient Address is required."),
         }),
         onSubmit: async (values) => {
             console.log("Form submitted with values:", values);
@@ -45,7 +45,7 @@ export function DoctorMainPageComponent() {
                 try {
                     const response = await axios({
                         method: "post",
-                        url: `http://localhost:8080/patient/create`,
+                        url: `https://hospital-jgla.onrender.com/patient/create`,
                         data: values,
                         headers: {
                             Authorization: `Bearer ${token}`

@@ -46,7 +46,7 @@ export function UpdateDoctor() {
         if (token) {
             axios({
                 method: "get",
-                url: `http://localhost:8080/doctor/${id}`,
+                url: `https://hospital-jgla.onrender.com/doctor/${id}`,
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -78,7 +78,7 @@ export function UpdateDoctor() {
 
         axios({
             method: "put",
-            url: `http://localhost:8080/update/${update.id}/${encodeURIComponent(
+            url: `https://hospital-jgla.onrender.com/update/${update.id}/${encodeURIComponent(
                 update.shiftTime
             )}/${encodeURIComponent(update.doctorFee)}`,
             headers: {
@@ -152,7 +152,7 @@ export function UpdateDoctor() {
                         </form>
 
                         <p>
-                            <Link to="/admin" className="text-decoration-none m-2">AdminPannel</Link>
+                            <Link to="/user" className="text-decoration-none m-2">AdminPannel</Link>
                         </p>
                     </div>
                 </div>

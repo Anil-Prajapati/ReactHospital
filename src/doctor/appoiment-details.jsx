@@ -22,7 +22,7 @@ export function PatientAppoimentComponent() {
         if (token) {
             axios({
                 method: "get",
-                url: `http://localhost:8080/patient/all`,
+                url: `https://hospital-jgla.onrender.com/patient/all`,
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -49,7 +49,7 @@ export function PatientAppoimentComponent() {
 
         axios({
             method: "get",
-            url: `http://localhost:8080/api/names/${username}`,
+            url: `https://hospital-jgla.onrender.com/api/names/${username}`,
             headers: {
                 Authorization: `Bearer ${token}`
             }

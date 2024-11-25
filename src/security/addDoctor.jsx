@@ -42,7 +42,7 @@ export function AddDoctorComponent() {
             setLoading(true)
             axios({
                 method: "post",
-                url: "http://localhost:8080/create",
+                url: "https://hospital-jgla.onrender.com/create",
                 headers: {
                     Authorization: `Bearer ${token}` 
                 },

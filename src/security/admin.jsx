@@ -25,7 +25,7 @@ export function AdminComponent() {
         if (token) {
             axios({
                 method: "get",
-                url: "http://localhost:8080/all",
+                url: "https://hospital-jgla.onrender.com/all",
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -43,7 +43,7 @@ export function AdminComponent() {
         axios(
             {
                 method: "get",
-                url: `http://localhost:8080/patient/amount`,
+                url: `https://hospital-jgla.onrender.com/patient/amount`,
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -67,7 +67,7 @@ export function AdminComponent() {
 
         axios({
             method: "get",
-            url: `http://localhost:8080/api/names/${username}`,
+            url: `https://hospital-jgla.onrender.com/api/names/${username}`,
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -106,7 +106,6 @@ export function AdminComponent() {
     const offset = pageNumber * itemsPerPage;
     const currentPageData = filteredAppointments.slice(offset, offset + itemsPerPage);
 
-
     return (
         <div className="container-fluid">
             <nav className="navbar navbar-expand-lg navbar-light bg-dark fixed-top">
@@ -142,7 +141,7 @@ export function AdminComponent() {
                         <ul className="navbar-nav">
                             <li className="nav-item d-flex">
                                 <button onClick={logoutMethod} className="btn btn-outline-danger me-3">Logout</button>
-                                <td className="text-light mt-2 me-4 fw-bold fs-5"><i class="bi bi-person-circle">{login.userName}</i></td>
+                                <td className="text-light mt-2 me-4 fw-bold fs-5"><i class="bi bi-person-circle me-1"></i>{login.userName}</td>
                             </li>
                         </ul>
                     </div>

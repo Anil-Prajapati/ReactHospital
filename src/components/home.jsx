@@ -12,7 +12,10 @@ export function HomeComponents() {
                         <div class="accordion-item">
                             <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                                 <div class="accordion-body bg-dark text-white rounded-5">
-                                    <strong className="text-danger">This is the first item's accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                                <strong className="text-success">Welcome to the World's Best Hospital:</strong> Our hospital is renowned for its exceptional patient care and outstanding medical services. We are dedicated to providing unparalleled healthcare, and our commitment
+                                 to excellence is reflected in every aspect of our services. This section highlights our mission to offer world-class medical treatment, supported by a team of compassionate and skilled professionals who prioritize the well-being and comfort of 
+                                 every patient. Our state-of-the-art facilities and innovative treatments ensure that we remain at the forefront of medical advancements. Whether you are here for a routine check-up or a complex procedure, you can trust that you are in the best hands.
+                                 Join us in experiencing the difference at the world's best hospital, where your health and well-being are our top priority.
                                 </div>
                             </div>
                         </div>
